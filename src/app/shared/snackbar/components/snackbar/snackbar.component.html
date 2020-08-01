@@ -1,0 +1,6 @@
+<div class="snackbar">
+  <span [ngClass]="isError?'error':'success'">{{data.message}}</span>
+  <div class="snackbar-action" fxFlex fxLayout fxLayoutAlign="flex-end">
+      <button mat-button (click)="action()">{{data.action}}</button>
+  </div>
+</div>
