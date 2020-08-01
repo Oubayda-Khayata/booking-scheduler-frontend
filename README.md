@@ -1,27 +1,23 @@
-# BookingSchedulerFrontend
+# Booking Scheduler - Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.0.
+## About
 
-## Development server
+This project is the backend of Appointment Scheduler System.
+Please see this **[demo](https://oubayda.npplusplus.com)**
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## Code scaffolding
+## Description
+### Experts page
+Shows a list of all available experts.
+### Expert page
+Shows details of the selected expert.
+### Appointment page
+You can book an appointment by entering:
+1. Your name.
+2. Your timezone (by default it will be your current time zone).
+3. Appointment date (a day with no appointments with the expert will have no color, a day with only one appointment will appear in green, a day with two appointments will appear in orange, and if a day have 3 or more appointments it will appear in red).
+4. Appointment duration (15 min, 30 min, 45 min, and 1 hour).
+5. A time slot that is suitable for you.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+### Clear all appointments
+You can clear all appointments by follow this link "/clear-appointments".
