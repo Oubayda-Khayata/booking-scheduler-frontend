@@ -1,0 +1,67 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Book an appointment</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="appointmentFormGroup" class="form">
+
+        <mat-form-field class="form-element">
+          <input matInput placeholder="User name" formControlName="username">
+          <mat-error *ngIf="!appointmentFormGroup.controls['username'].valid && appointmentFormGroup.controls['username'].touched">
+            {{getError('username')}}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="form-element">
+          <mat-label>Select a timezone</mat-label>
+          <mat-select formControlName="timezone" required (selectionChange)="timezoneChanged()">
+            <mat-option *ngFor="let timezone of timezones" [value]="timezone">{{timezone}}</mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="!appointmentFormGroup.controls['timezone'].valid && appointmentFormGroup.controls['timezone'].touched">
+            {{getError('timezone')}}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="form-element">
+          <input matInput [matDatepicker]="datePicker" formControlName="date"
+            placeholder="Select a date" (dateChange)="inputChanged()">
+          <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+          <mat-datepicker [dateClass]="dateClass" #datePicker></mat-datepicker>
+          <mat-error
+            *ngIf="!appointmentFormGroup.controls['date'].valid && appointmentFormGroup.controls['date'].touched">
+            {{getError('date')}}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="form-element">
+          <mat-label>Select a duration</mat-label>
+          <mat-select formControlName="durationId" required (selectionChange)="inputChanged()">
+            <mat-option *ngFor="let duration of durations | async" [value]="duration.id">{{duration.name}}</mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="!appointmentFormGroup.controls['durationId'].valid && appointmentFormGroup.controls['durationId'].touched">
+            {{getError('durationId')}}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="form-element">
+          <mat-label>Select a timeslot</mat-label>
+          <mat-select formControlName="timeslot" required (selectionChange)="timeslotChanged()">
+            <mat-option *ngFor="let timeslot of timeslots | async" [value]="timeslot">{{timeslot.fromTime}} -> {{timeslot.toTime}}</mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="!appointmentFormGroup.controls['timeslot'].valid && appointmentFormGroup.controls['timeslot'].touched">
+            {{getError('timeslot')}}
+          </mat-error>
+        </mat-form-field>
+
+      </form>
+      <span class="description">{{description}}</span>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button [disabled]="!appointmentFormGroup.valid" (click)="bookNow()">BOOK NOW</button>
+    </mat-card-actions>
+  </mat-card>
+</div>
