@@ -1,0 +1,6 @@
+<div fxLayout="row wrap">
+  <app-expert-card *ngFor="let expert of experts | async"
+   class="spacing"
+   [expert]="expert"
+   (showDetailsClick)="showExpertDetails($event)"></app-expert-card>
+</div>
