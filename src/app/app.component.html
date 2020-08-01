@@ -1,0 +1,7 @@
+<mat-progress-bar *ngIf="(ngxLoadingBar.progress$|async) != 0 && (ngxLoadingBar.progress$|async) != 100"
+  class="loading-bar" mode="indeterminate">
+</mat-progress-bar>
+<div class="container" [ngClass]="{'is-mobile': mediaObserver.isActive('xs')}">
+  <router-outlet></router-outlet>
+</div>
+<app-snackbar-container></app-snackbar-container>
