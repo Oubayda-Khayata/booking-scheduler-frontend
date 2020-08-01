@@ -1,0 +1,17 @@
+<div class="container">
+  <mat-card>
+    <mat-card-title-group class="center">
+      <img mat-card-lg-image src="{{imageUrl}}">
+    </mat-card-title-group>
+    <mat-card-title>{{expert?.firstname}} {{expert?.lastname}}</mat-card-title>
+    <mat-card-subtitle>{{expert?.expertise}}</mat-card-subtitle>
+    <mat-card-content>
+      <b>Country: </b> {{expert?.country}}
+      <br>
+      <b>Working Hours: </b> {{expert?.dailyWorkingHoursFrom}} -> {{expert?.dailyWorkingHoursTo}}
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button (click)="bookNow()">BOOK NOW</button>
+    </mat-card-actions>
+  </mat-card>
+</div>
