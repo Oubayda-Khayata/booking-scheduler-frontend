@@ -1,7 +1,7 @@
-import { AppointmentDuration } from './../../models/appointment-duration';
+import { AppointmentDuration } from './../../models/appointment-duration.model';
 import { map, catchError, tap } from 'rxjs/operators';
 import { DateUtility } from './../../../core/utilities/date-utility';
-import { TimeSlot } from './../../models/time-slot';
+import { TimeSlot } from './../../models/time-slot.model';
 import { Injectable } from '@angular/core';
 import { ApiService } from 'src/app/core/services/api/api.service';
 import { SnackbarService } from '../../snackbar/services/snackbar/snackbar.service';
