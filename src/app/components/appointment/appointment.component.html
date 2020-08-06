@@ -8,25 +8,17 @@
 
         <mat-form-field class="form-element">
           <input matInput placeholder="User name" formControlName="username">
-          <mat-error *ngIf="!appointmentFormGroup.controls['username'].valid && appointmentFormGroup.controls['username'].touched">
+          <mat-error
+            *ngIf="!appointmentFormGroup.controls['username'].valid && appointmentFormGroup.controls['username'].touched">
             {{getError('username')}}
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field class="form-element">
-          <mat-label>Select a timezone</mat-label>
-          <mat-select formControlName="timezone" required (selectionChange)="timezoneChanged()">
-            <mat-option *ngFor="let timezone of timezones" [value]="timezone">{{timezone}}</mat-option>
-          </mat-select>
-          <mat-error
-            *ngIf="!appointmentFormGroup.controls['timezone'].valid && appointmentFormGroup.controls['timezone'].touched">
-            {{getError('timezone')}}
-          </mat-error>
-        </mat-form-field>
+        <mat-label>Your current timezone is: {{timezoneService.currentTimezone}}</mat-label>
 
         <mat-form-field class="form-element">
-          <input matInput [matDatepicker]="datePicker" formControlName="date"
-            placeholder="Select a date" (dateChange)="inputChanged()">
+          <input matInput [matDatepicker]="datePicker" formControlName="date" placeholder="Select a date"
+            (dateChange)="inputChanged()">
           <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
           <mat-datepicker [dateClass]="dateClass" #datePicker></mat-datepicker>
           <mat-error
@@ -46,10 +38,11 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field class="form-element">
+        <mat-form-field *ngIf="(timeslots | async)?.length > 0" class="form-element">
           <mat-label>Select a timeslot</mat-label>
           <mat-select formControlName="timeslot" required (selectionChange)="timeslotChanged()">
-            <mat-option *ngFor="let timeslot of timeslots | async" [value]="timeslot">{{timeslot.fromTime}} -> {{timeslot.toTime}}</mat-option>
+            <mat-option *ngFor="let timeslot of timeslots | async" [value]="timeslot">{{timeslot.fromTime}} ->
+              {{timeslot.toTime}}</mat-option>
           </mat-select>
           <mat-error
             *ngIf="!appointmentFormGroup.controls['timeslot'].valid && appointmentFormGroup.controls['timeslot'].touched">
@@ -57,11 +50,16 @@
           </mat-error>
         </mat-form-field>
 
+        <mat-label class="warn" *ngIf="!timeslots || (timeslots | async)?.length === 0">
+          There is no timeslots for current configuration
+        </mat-label>
+
       </form>
       <span class="description">{{description}}</span>
     </mat-card-content>
-    <mat-card-actions>
-      <button mat-button [disabled]="!appointmentFormGroup.valid" (click)="bookNow()">BOOK NOW</button>
+    <mat-card-actions class="actions-container">
+      <button class="button" mat-button [disabled]="!appointmentFormGroup.valid" (click)="bookNow()">BOOK NOW</button>
+      <button class="button" mat-flat-button color="warn" (click)="cancel()">CANCEL</button>
     </mat-card-actions>
   </mat-card>
 </div>

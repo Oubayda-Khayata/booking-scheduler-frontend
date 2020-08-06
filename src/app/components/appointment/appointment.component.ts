@@ -1,8 +1,10 @@
+import { DateUtility } from './../../core/utilities/date-utility';
+import { Timezone } from './../../shared/models/timezone.model';
 import { ExpertService } from './../../shared/services/expert/expert.service';
 import { TimezoneService } from './../../core/services/timezone/timezone.service';
-import { TimeSlot } from './../../shared/models/time-slot';
+import { TimeSlot } from './../../shared/models/time-slot.model';
 import { AppointmentService } from './../../shared/services/appointment/appointment.service';
-import { AppointmentDuration } from './../../shared/models/appointment-duration';
+import { AppointmentDuration } from './../../shared/models/appointment-duration.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -17,7 +19,6 @@ import { MatCalendarCellCssClasses } from '@angular/material/datepicker';
 })
 export class AppointmentComponent implements OnInit {
   appointmentFormGroup: FormGroup;
-  timezones: string[] = [];
   durations: Observable<AppointmentDuration[]>;
   timeslots: Observable<TimeSlot[]>;
   description: string;
@@ -29,51 +30,38 @@ export class AppointmentComponent implements OnInit {
     private router: Router,
     private appointmentService: AppointmentService,
     private expertService: ExpertService,
-    private timezoneService: TimezoneService
+    public timezoneService: TimezoneService
   ) {}
 
   ngOnInit(): void {
     this.createForm();
-    // Just a workaround to call http api from https
-    if (location.protocol === 'https:') {
-      this.timezoneService.getUserTimezoneHTTPS().subscribe((timezone: string) => {
-        this.appointmentFormGroup.get('timezone').setValue(timezone);
-        this.timezoneChanged();
-      });
-    } else {
-      this.timezoneService.getUserTimezone().subscribe((timezone: string) => {
-        this.appointmentFormGroup.get('timezone').setValue(timezone);
-        this.timezoneChanged();
-      });
-    }
 
     this.route.paramMap.subscribe((params) => {
       const id = +params.get('id');
       this.appointmentFormGroup.get('expertId').setValue(id);
     });
 
-    for (let timezone = -12; timezone <= 12; timezone++) {
-      if (timezone > 0) {
-        this.timezones.push(`GMT+${timezone}`);
-      } else if (timezone < 0) {
-        this.timezones.push(`GMT-${-timezone}`);
-      } else {
-        this.timezones.push('GMT');
-      }
-    }
-
+    this.timezoneService.currentTimezoneState.subscribe((timezone: string) =>
+      this.timezoneChanged(timezone)
+    );
     this.durations = this.appointmentService.getAppointmentDurations();
+    this.timezoneChanged(this.timezoneService.currentTimezone);
   }
 
   bookNow(): void {
     const username = this.appointmentFormGroup.get('username').value;
     const expertId = this.appointmentFormGroup.get('expertId').value;
-    const timezone = this.appointmentFormGroup.get('timezone').value;
     const durationId = this.appointmentFormGroup.get('durationId').value;
     const datetime = this.appointmentFormGroup.get('timeslot').value.dateTime;
 
     this.appointmentService
-      .bookAppointment(username, expertId, durationId, datetime, timezone)
+      .bookAppointment(
+        username,
+        expertId,
+        durationId,
+        datetime,
+        this.timezoneService.currentTimezone
+      )
       .subscribe((success: boolean) => {
         if (success) {
           this.router.navigateByUrl('/experts');
@@ -81,11 +69,22 @@ export class AppointmentComponent implements OnInit {
       });
   }
 
+  cancel(): void {
+    this.router.navigateByUrl('/experts');
+  }
+
   dateClass = (d: Date): MatCalendarCellCssClasses => {
     const date = d.getDate();
 
     const appointmentCount = this.expertAppointments.filter(
-      (appointment) => appointment.getDate() === date
+      (appointment: Date) => {
+        appointment = new Date(
+          appointment.toLocaleString('en-US', {
+            timeZone: this.timezoneService.currentTimezone,
+          })
+        );
+        return appointment.getDate() === date;
+      }
     ).length;
     if (appointmentCount === 0) {
       return '';
@@ -101,9 +100,8 @@ export class AppointmentComponent implements OnInit {
     }
   };
 
-  timezoneChanged(): void {
+  timezoneChanged(timezone: string): void {
     const expertId = this.appointmentFormGroup.get('expertId').value;
-    const timezone = this.appointmentFormGroup.get('timezone').value;
     let date = this.appointmentFormGroup.get('date').value;
     if (!date) {
       date = new Date();
@@ -125,7 +123,6 @@ export class AppointmentComponent implements OnInit {
     this.appointmentFormGroup = this.formBuilder.group({
       username: ['', Validators.required],
       expertId: [0, Validators.required],
-      timezone: ['', Validators.required],
       date: ['', Validators.required],
       durationId: ['', Validators.required],
       timeslot: ['', Validators.required],
@@ -141,16 +138,20 @@ export class AppointmentComponent implements OnInit {
   inputChanged(): void {
     this.description = '';
     const expertId = this.appointmentFormGroup.get('expertId').value;
-    const timezone = this.appointmentFormGroup.get('timezone').value;
-    const date = this.appointmentFormGroup.get('date').value;
+    let date = this.appointmentFormGroup.get('date').value;
+    console.log(date);
+    if (date && !isNaN(date)) {
+      date = DateUtility.changeTimezone(date, this.timezoneService.currentTimezone);
+    }
+    console.log(date);
     const durationId = this.appointmentFormGroup.get('durationId').value;
 
-    if (expertId && date && durationId) {
+    if (expertId && date && !isNaN(date) && durationId) {
       this.timeslots = this.appointmentService.getTimeSlots(
         expertId,
         durationId,
         date,
-        timezone
+        this.timezoneService.currentTimezone
       );
     }
   }
