@@ -1,6 +1,11 @@
 .container {
   padding: 30px;
   min-width: 300px;
+  width: 100%;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  display: flex;
 }
 .spacing {
   margin: 10px;

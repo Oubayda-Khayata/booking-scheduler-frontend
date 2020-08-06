@@ -7,6 +7,14 @@
   margin: 10px;
 }
 
+.button {
+  flex: 1 1 auto;
+}
+
+.container .actions-container {
+  display: flex;
+}
+
 .center {
   justify-content: center;
   margin-bottom: 10px;
@@ -25,6 +33,11 @@
 .description {
   font-size: large;
   color: rgb(180, 180, 255);
+}
+
+.warn {
+  font-size: large;
+  color: rgb(200, 100, 100);
 }
 
 .green-date-class {
