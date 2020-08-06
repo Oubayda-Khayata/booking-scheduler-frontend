@@ -1,5 +1,5 @@
 import { DateUtility } from './../../../core/utilities/date-utility';
-import { Expert } from './../../models/expert';
+import { Expert } from './../../models/expert.model';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { ApiService } from 'src/app/core/services/api/api.service';
@@ -53,11 +53,11 @@ export class ExpertService {
       );
   }
 
-  getExpert(id: number): Observable<Expert> {
+  getExpert(id: number, timezone?: string): Observable<Expert> {
     const url = `${this.apiService.getBaseUrl()}/experts/${id}`;
     return this.httpService
       .get<Expert>(url, {
-        headers: this.apiService.getAPIHeaders(ContentType.JSON),
+        headers: this.apiService.getAPIHeaders(ContentType.JSON, timezone),
       })
       .pipe(
         map((data: any) => new Expert().deserialize(data.data.expert)),
