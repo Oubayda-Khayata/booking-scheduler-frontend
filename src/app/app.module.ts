@@ -12,6 +12,7 @@ import { ExpertDetailsComponent } from './components/expert-details/expert-detai
 import { ExpertCardComponent } from './components/expert-card/expert-card.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClearAppointmentsComponent } from './components/clear-appointments/clear-appointments.component';
+import { TimezoneSelectorComponent } from './components/timezone-selector/timezone-selector.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { ClearAppointmentsComponent } from './components/clear-appointments/clea
     AppointmentComponent,
     ExpertDetailsComponent,
     ExpertCardComponent,
-    ClearAppointmentsComponent
+    ClearAppointmentsComponent,
+    TimezoneSelectorComponent
   ],
   imports: [
     BrowserModule,
